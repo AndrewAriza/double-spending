@@ -16,6 +16,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
+app.conf.update(BROKER_URL=os.environ.get('REDIS_URL', 'redis://localhost'),
+                CELERY_RESULT_BACKEND=os.environ.get('REDIS_URL', 'redis://localhost'))
 
 @app.task(bind=True)
 def debug_task(self):

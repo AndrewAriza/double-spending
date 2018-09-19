@@ -15,18 +15,17 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3pg#)rj4hl#ml)-3%$fd%^r7l-yn_o6+dtx+xyyxhebkwe11br'
+SECRET_KEY = os.environ.get('SECRET_KEY', '3pg#)rj4hl#ml)-3%$fd%^r7l-yn_o6+dtx+xyyxhebkwe11br')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', True)
 
-ALLOWED_HOSTS = []
-
+# Allow all host headers
+ALLOWED_HOSTS = ['double-spending-andresariza.herokuapp.com']
 
 # Application definition
 
@@ -73,18 +72,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'double-spending.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'CONN_MAX_AGE': 500
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -103,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -133,17 +129,11 @@ STATICFILES_DIRS = (
 #  Add configuration for static files storage using whitenoise
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-# Update database configuration with $DATABASE_URL
-import dj_database_url
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
 # Configure Django App for Heroku.
 import django_heroku
+
 django_heroku.settings(locals())
 
-# Allow all host headers
-ALLOWED_HOSTS = ['double-spending-andresariza.herokuapp.com']
-
 # Celery setting
-CELERY_BROKER_URL = 'redis://localhost'
+ELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = ('blockchain.tasks')
