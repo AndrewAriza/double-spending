@@ -1,0 +1,1 @@
+web: gunicorn double-spending.wsgi --log-file -
