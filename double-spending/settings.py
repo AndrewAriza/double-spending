@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blockchain',
-    'rest_framework'
+    'rest_framework',
+    'celery'
 ]
 
 MIDDLEWARE = [
@@ -120,3 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Celery setting
+CELERY_BROKER_URL = 'redis://localhost'
+CELERY_IMPORTS = ('blockchain.tasks')
